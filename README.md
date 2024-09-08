@@ -69,4 +69,4 @@ Appuyez sur **Entrée**, et voilà, c'est lancé !
 ![Capture d’écran 2024-09-08 133439](https://github.com/user-attachments/assets/2efc257a-c972-49fe-803e-aa6efb7409e6)
 
 > Ce sera ce mot de passe que vous devrez mettre dans la variable d’environnement `EMAIL_PASS` (voir Étape 2).
-
+Une fois changé, vous pouvez relancer le bot
