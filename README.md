@@ -39,7 +39,7 @@ Ensuite, installez les bibliothèques Python nécessaires en ouvrant un terminal
 
 
 ### Étape 4 : Créer et configurer le script Python
-Ouvrez un éditeur de texte (comme Visual Studio Code, Sublime Text, ou même Notepad) et créez un fichier `site_bot.py`. Collez le code que vous trouverez via ce lien https://github.com/madamebonplan/sitebot/blob/main/code%20%C3%A0%20copier dans le fichier . Vous devrez ajuster la variable `service` en fonction du fournisseur de messagerie que vous utilisez (Outlook, Gmail, ou Yahoo).
+Ouvrez un éditeur de texte (comme Bloc Note, Visual Studio Code, Sublime Text, ou même Notepad) et créez un fichier `site_bot.py`. Collez le code que vous trouverez via ce lien https://github.com/madamebonplan/sitebot/blob/main/code%20%C3%A0%20copier dans le fichier . Vous devrez ajuster la variable `service` en fonction du fournisseur de messagerie que vous utilisez (Outlook, Gmail, ou Yahoo).
 
 **Code à copier :**
 > Là, le code est par défaut sur `service = "outlook"`.  
