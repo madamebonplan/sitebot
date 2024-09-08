@@ -3,75 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutoriel : Créer un Bot Python pour se Désinscrire des Newsletters</title>
+    <title>Créer un Bot de Désinscription Automatique</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            margin: 20px;
-            background-color: #f4f4f4;
         }
         h1 {
-            color: #2c3e50;
+            color: #4CAF50;
             text-align: center;
         }
         h2 {
-            color: #2980b9;
+            color: #2196F3;
         }
         p {
-            margin-bottom: 10px;
+            margin-bottom: 1em;
         }
         code {
-            background-color: #eaeaea;
+            background-color: #f4f4f4;
             padding: 2px 5px;
-            border-radius: 5px;
+            border-radius: 4px;
         }
         pre {
-            background-color: #eaeaea;
+            background-color: #f4f4f4;
             padding: 10px;
             border-radius: 5px;
             overflow-x: auto;
         }
         ul {
-            margin: 10px 0;
+            list-style-type: square;
+            margin-left: 20px;
+        }
+        .note {
+            background-color: #ffeb3b;
+            padding: 10px;
+            border-left: 5px solid #fbc02d;
+            margin-bottom: 20px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <h1><strong>BONJOUUUR</strong> !</h1>
-    
-    <p>Voici les <strong>5 étapes à suivre</strong> pour créer votre propre bot (gratuitement) qui vous permettra de vous désinscrire automatiquement de tous les sites qui vous envoient des mails ennuyeux :</p>
-    <p><em>(Pour Gmail, un autre tuto arrivera car c’est un peu plus compliqué)</em></p>
-    <p>Ouvrez le lien sur PC pour une meilleure qualité d'image.</p>
-    <p>Si d'autres personnes s'y connaissent en code, n’hésitez pas à me DM pour d’éventuelles améliorations.</p>
-    
+
+    <h1>BONJOUUUR !</h1>
+
+    <p>Voici les 5 étapes à suivre pour créer votre propre bot (gratuitement) qui vous permettra de vous désinscrire automatiquement de tous les sites qui vous envoient des mails chiants :</p>
+
+    <div class="note">
+        <strong>Note :</strong> Pour Gmail, un autre tutoriel arrivera car c'est un peu plus compliqué.
+    </div>
+
+    <p>Ouvrez le lien sur PC pour avoir une meilleure qualité d'image.</p>
+    <p>Si d'autres personnes s'y connaissent en code, n'hésitez pas à me DM pour d'éventuelles améliorations.</p>
+
     <h2>Guide : Créer un bot Python pour se désinscrire des newsletters (Outlook, Yahoo)</h2>
-    
+
     <h3>Objectif du bot :</h3>
     <ul>
         <li>Se connecter à une boîte email via IMAP (Outlook, Yahoo).</li>
         <li>Parcourir les emails pour détecter les newsletters.</li>
         <li>Suivre le lien de désabonnement pour tenter de se désabonner automatiquement.</li>
     </ul>
-    
+
     <h3>Prérequis :</h3>
     <ul>
         <li>Python 3.x installé sur votre machine.</li>
         <li>Une adresse email Outlook ou Yahoo.</li>
     </ul>
-    
-    <h2>Étape 1 : Installer Python et les dépendances</h2>
-    <p>Si vous n'avez pas encore Python, téléchargez-le et installez-le depuis <a href="https://www.python.org">python.org</a>.</p>
-    <p>Ensuite, installez les bibliothèques Python nécessaires en ouvrant un terminal ou une invite de commandes et en exécutant la commande suivante :</p>
+
+    <h3>Étape 1 : Installer Python et les dépendances</h3>
+    <p>Si vous n'avez pas encore Python, téléchargez-le et installez-le depuis <a href="https://www.python.org/downloads/">python.org</a>.</p>
+    <p>Ensuite, installez les bibliothèques Python nécessaires en ouvrant un terminal ou une invite de commandes et en exécutant les commandes suivantes :</p>
     <pre><code>pip install requests</code></pre>
-    
-    <h2>Étape 2 : Configurer les identifiants avec des variables d'environnement</h2>
-    
-    <h3>Sous Windows :</h3>
+
+    <h3>Étape 2 : Configurer les identifiants avec des variables d'environnement</h3>
+    <h4>Sous Windows :</h4>
     <ul>
         <li>Ouvrez le menu Démarrer et tapez "Variables d'environnement".</li>
-        <li>Cliquez sur <em>Modifier les variables d'environnement du système</em>.</li>
-        <li>Dans la fenêtre Variables d'environnement, sous Variables utilisateur, cliquez sur <em>Nouveau</em>.</li>
+        <li>Cliquez sur <strong>Modifier les variables d'environnement du système</strong>.</li>
+        <li>Dans la fenêtre <strong>Variables d'environnement</strong>, sous <strong>Variables utilisateur</strong>, cliquez sur <strong>Nouveau</strong>.</li>
         <li>Créez deux nouvelles variables :
             <ul>
                 <li><code>EMAIL_USER</code> : votre adresse email (Outlook, Yahoo).</li>
@@ -79,37 +89,33 @@
             </ul>
         </li>
     </ul>
-    
-    <h3>Sous Mac/Linux :</h3>
-    <ul>
-        <li>Ouvrez un terminal.</li>
-        <li>Ajoutez vos identifiants à la fin de votre fichier <code>.bashrc</code> ou <code>.zshrc</code>.</li>
-    </ul>
-    
-    <h2>Étape 4 : Créer et configurer le script Python</h2>
+
+    <h4>Sous Mac/Linux :</h4>
+    <p>Ouvrez un terminal et ajoutez vos identifiants à la fin de votre fichier <code>.bashrc</code> ou <code>.zshrc</code> :</p>
+    <pre><code>export EMAIL_USER="votre_email"
+export EMAIL_PASS="votre_mot_de_passe"</code></pre>
+
+    <h3>Étape 4 : Créer et configurer le script Python</h3>
     <p>Ouvrez un éditeur de texte (comme Visual Studio Code, Sublime Text, ou même Notepad) et créez un fichier <code>unsubscribe_bot.py</code>. Collez le code suivant dans ce fichier. Vous devrez ajuster la variable <code>service</code> en fonction du fournisseur de messagerie que vous utilisez (Outlook, Gmail, ou Yahoo).</p>
-    
-    <h3>CODE à copier :</h3>
-    <p>Par défaut, le code est configuré avec <code>service = "outlook"</code>. C'est en bas du code, et vous devrez changer la valeur en fonction de votre service, donc mettre <code>service = "yahoo"</code> pour Yahoo, etc.</p>
-    
-    <p>Ensuite, enregistrez ce fichier sous le nom <code>site_bot.py</code>.</p>
-    
-    <h2>Étape 5 : Lancer le bot</h2>
+
+    <div class="note">
+        <strong>Code à copier :</strong><br>
+        Là, le code est par défaut sur <code>service = "outlook"</code>.<br>
+        C'est tout en bas du code, et c'est ce que vous devrez changer en fonction de votre service (par exemple, <code>service = "yahoo"</code> pour Yahoo).
+    </div>
+
+    <h3>Étape 5 : Lancer le bot</h3>
     <ul>
-        <li>Faites un clic droit sur le dossier contenant le fichier et sélectionnez "Ouvrir dans le terminal".</li>
-        <li>Ensuite, tapez la commande suivante dans le terminal :
-            <pre><code>python site_bot.py</code></pre>
-        </li>
+        <li>Faites clic droit sur le dossier et sélectionnez "Ouvrir dans le terminal".</li>
+        <li>Puis tapez <code>python [nom du fichier]</code> (par exemple : <code>python site_bot.py</code>).</li>
     </ul>
-    
-    <p>Appuyez sur Entrée et voilà, le bot est lancé !</p>
-    
-    <h3>Problèmes éventuels :</h3>
-    <p>Si vous obtenez une erreur de connexion avec Outlook, suivez les étapes suivantes :</p>
-    <ul>
-        <li>Accédez à la sécurité de votre compte et activez l'authentification à deux facteurs.</li>
-        <li>Créez un mot de passe d'application dans la section <em>Mot de passe d'application</em>.</li>
-        <li>Utilisez ce mot de passe dans la variable d'environnement <code>EMAIL_PASS</code> (voir Étape 2).</li>
-</code></pre>
+    <p>Faites entrée, et voilà, c'est lancé !</p>
+
+    <div class="note">
+        <strong>Si message d'erreur pour Outlook (erreur de connexion) :</strong><br>
+        Allez dans la sécurité de votre compte pour activer l'identification à 2 facteurs. Une fois activée, toujours sur la même page, descendez jusqu'à <strong>Mot de passe d'application</strong> puis cliquez sur <strong>Créer un mot de passe d'application</strong>.<br>
+        Ce sera ce mot de passe que vous devrez mettre dans la variable d'environnement <code>EMAIL_PASS</code> (voir Étape 2).
+    </div>
+
 </body>
 </html>
