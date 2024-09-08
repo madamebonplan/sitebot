@@ -4,9 +4,6 @@ Voici les 5 étapes à suivre pour créer votre propre bot (gratuitement) qui vo
 
 > **Note :** Pour Gmail, un autre tutoriel arrivera car c’est un peu plus compliqué.
 
-Ouvrez le lien sur PC pour avoir une meilleure qualité d’image.  
-Si d’autres personnes s’y connaissent en code, n’hésitez pas à me DM pour d’éventuelles améliorations.
-
 ## Guide : Créer un bot Python pour se désinscrire des newsletters (Outlook, Yahoo)
 
 ### Objectif du bot :
