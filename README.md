@@ -47,21 +47,27 @@ Ouvrez un éditeur de texte (comme Visual Studio Code, Sublime Text, ou même No
 **Code à copier :**
 > Là, le code est par défaut sur `service = "outlook"`.  
 > C’est tout en bas du code et c’est cela que vous devrez changer en fonction de votre service (par exemple `service = "yahoo"` pour Yahoo).
+
 ![Capture d’écran 2024-09-05 144022](https://github.com/user-attachments/assets/c251226c-addc-4f71-8638-7f13b6a3d49a)
 
 ### Étape 5 : Lancer le bot
 - Faites un clic droit sur le dossier et sélectionnez **Ouvrir dans le terminal**.
+  
  ![IMG_2865](https://github.com/user-attachments/assets/6c1d66fb-15de-4b62-aa8c-f7304344db14)
+
 - Puis écrire “python [nom du fichier]” donc pour moi c’est : “python site_bot.py” :
+  
 ![Capture d’écran 2024-09-06 200152](https://github.com/user-attachments/assets/5dc51e67-103c-46d9-aa1c-34736eef3ed3)
 
 
 
 Appuyez sur **Entrée**, et voilà, c'est lancé !
+
 ![Capture d’écran 2024-09-05 145201](https://github.com/user-attachments/assets/f04826a3-1bd7-4d9c-ba53-79bd21f40cd5)
 
 > **Si message d’erreur pour Outlook (erreur de connexion) :**  
 > Allez dans la sécurité de votre compte pour activer l’identification à 2 facteurs. Une fois activée, toujours sur la même page, descendez jusqu’à **Mot de passe d’application** puis cliquez sur **Créer un mot de passe d’application**.
+
 >![Capture d’écran 2024-09-08 133010](https://github.com/user-attachments/assets/cb52b23d-6ef7-4825-aa01-87dcb70c9e8d)
 ![Capture d’écran 2024-09-08 133439](https://github.com/user-attachments/assets/2efc257a-c972-49fe-803e-aa6efb7409e6)
 
