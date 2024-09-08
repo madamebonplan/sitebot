@@ -1,150 +1,115 @@
-import imaplib
-import email
-from email.header import decode_header
-import os
-import re
-import requests
-from requests.exceptions import RequestException
-
-# Récupérer les identifiants depuis les variables d'environnement
-username = os.getenv("EMAIL_USER")
-password = os.getenv("EMAIL_PASS")
-
-if username is None or password is None:
-    print("Erreur : les variables d'environnement ne sont pas définies.")
-else:
-    print("Les variables d'environnement sont correctement récupérées.")
-
-# Connexion à la boîte email en fonction du service
-def connect_to_email(service):
-    if service == "outlook":
-        imap_server = "imap-mail.outlook.com"
-    elif service == "gmail":
-        imap_server = "imap.gmail.com"
-    elif service == "yahoo":
-        imap_server = "imap.mail.yahoo.com"
-    else:
-        raise ValueError("Service non pris en charge. Utilisez 'outlook', 'gmail', ou 'yahoo'.")
-
-    try:
-        mail = imaplib.IMAP4_SSL(imap_server)
-        mail.login(username, password)
-        print(f"Connexion réussie au service {service}")
-        return mail
-    except imaplib.IMAP4.error as e:
-        print(f"Erreur lors de la connexion au service {service} : {str(e)}")
-        return None
-
-# Récupération des emails
-def fetch_emails(mail):
-    try:
-        mail.select("inbox")
-        status, messages = mail.search(None, "ALL")
-        if status == 'OK':
-            email_ids = messages[0].split()
-            return email_ids
-        else:
-            print("Erreur lors de la recherche des emails.")
-            return []
-    except Exception as e:
-        print(f"Erreur lors de la récupération des emails : {str(e)}")
-        return []
-
-# Vérifie si un email est une newsletter
-def is_newsletter(email_message):
-    try:
-        for part in email_message.walk():
-            if part.get_content_type() == "text/html":
-                charset = part.get_content_charset() or "utf-8"
-                try:
-                    body = part.get_payload(decode=True).decode(charset)
-                except UnicodeDecodeError:
-                    print(f"Erreur de décodage avec {charset}, tentative avec 'ISO-8859-1'.")
-                    body = part.get_payload(decode=True).decode('ISO-8859-1')
-
-                if "unsubscribe" in body.lower() or "se désinscrire" in body.lower() or "désabonnement" in body.lower():
-                    return True
-        return False
-    except Exception as e:
-        print(f"Erreur lors de la vérification de la newsletter : {str(e)}")
-        return False
-
-# Trouver le lien de désabonnement
-def find_unsubscribe_link(email_message):
-    try:
-        for part in email_message.walk():
-            if part.get_content_type() == "text/html":
-                charset = part.get_content_charset() or "utf-8"
-                try:
-                    body = part.get_payload(decode=True).decode(charset)
-                except UnicodeDecodeError:
-                    print(f"Erreur de décodage avec {charset}, tentative avec 'ISO-8859-1'.")
-                    body = part.get_payload(decode=True).decode('ISO-8859-1')
-
-                match = re.search(r'href=["\'](https?://[^"\']*(unsubscribe|se.désinscrire)[^"\']*)["\']', body, re.IGNORECASE)
-                if match:
-                    return match.group(1)
-        return None
-    except Exception as e:
-        print(f"Erreur lors de la recherche du lien de désabonnement : {str(e)}")
-        return None
-
-# Valider le lien avant de le suivre
-def validate_link(link):
-    try:
-        if link and link.startswith("https://"):
-            return True
-        print("Lien de désabonnement non sécurisé ou incorrect.")
-        return False
-    except Exception as e:
-        print(f"Erreur lors de la validation du lien : {str(e)}")
-        return False
-
-# Suivre le lien de désabonnement
-def unsubscribe(link):
-    if validate_link(link):
-        try:
-            response = requests.get(link, timeout=10)
-            if response.status_code == 200:
-                print("Désabonnement réussi.")
-            else:
-                print(f"Échec du désabonnement. Code de statut : {response.status_code}")
-        except RequestException as e:
-            print(f"Erreur lors de la requête de désabonnement : {str(e)}")
-    else:
-        print("Lien de désabonnement non valide ou non sécurisé.")
-
-# Traiter les emails
-def process_newsletters(mail):
-    email_ids = fetch_emails(mail)
-    for email_id in email_ids:
-        try:
-            status, data = mail.fetch(email_id, "(RFC822)")
-            if status == 'OK':
-                for response_part in data:
-                    if isinstance(response_part, tuple):
-                        msg = email.message_from_bytes(response_part[1])
-
-                        if is_newsletter(msg):
-                            unsubscribe_link = find_unsubscribe_link(msg)
-                            if unsubscribe_link:
-                                print(f"Lien de désabonnement trouvé : {unsubscribe_link}")
-                                unsubscribe(unsubscribe_link)
-                            else:
-                                print("Aucun lien de désabonnement trouvé.")
-        except Exception as e:
-            print(f"Erreur lors du traitement de l'email {email_id} : {str(e)}")
-
-# Connexion au service email et traitement
-if __name__ == "__main__":
-    # Définissez votre service de messagerie : "outlook", "gmail", ou "yahoo"
-    service = "outlook"  # Par exemple, remplacez par "gmail" ou "yahoo"
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriel : Créer un Bot Python pour se Désinscrire des Newsletters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        code {
+            background-color: #eaeaea;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+        pre {
+            background-color: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        ul {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1><strong>BONJOUUUR</strong> !</h1>
     
-    if username and password:
-        mail = connect_to_email(service)
-        if mail:
-            process_newsletters(mail)
-        else:
-            print("Impossible de traiter les emails. La connexion a échoué.")
-    else:
-        print("Impossible de se connecter à l'email car les identifiants ne sont pas définis.")
+    <p>Voici les <strong>5 étapes à suivre</strong> pour créer votre propre bot (gratuitement) qui vous permettra de vous désinscrire automatiquement de tous les sites qui vous envoient des mails ennuyeux :</p>
+    <p><em>(Pour Gmail, un autre tuto arrivera car c’est un peu plus compliqué)</em></p>
+    <p>Ouvrez le lien sur PC pour une meilleure qualité d'image.</p>
+    <p>Si d'autres personnes s'y connaissent en code, n’hésitez pas à me DM pour d’éventuelles améliorations.</p>
+    
+    <h2>Guide : Créer un bot Python pour se désinscrire des newsletters (Outlook, Yahoo)</h2>
+    
+    <h3>Objectif du bot :</h3>
+    <ul>
+        <li>Se connecter à une boîte email via IMAP (Outlook, Yahoo).</li>
+        <li>Parcourir les emails pour détecter les newsletters.</li>
+        <li>Suivre le lien de désabonnement pour tenter de se désabonner automatiquement.</li>
+    </ul>
+    
+    <h3>Prérequis :</h3>
+    <ul>
+        <li>Python 3.x installé sur votre machine.</li>
+        <li>Une adresse email Outlook ou Yahoo.</li>
+    </ul>
+    
+    <h2>Étape 1 : Installer Python et les dépendances</h2>
+    <p>Si vous n'avez pas encore Python, téléchargez-le et installez-le depuis <a href="https://www.python.org">python.org</a>.</p>
+    <p>Ensuite, installez les bibliothèques Python nécessaires en ouvrant un terminal ou une invite de commandes et en exécutant la commande suivante :</p>
+    <pre><code>pip install requests</code></pre>
+    
+    <h2>Étape 2 : Configurer les identifiants avec des variables d'environnement</h2>
+    
+    <h3>Sous Windows :</h3>
+    <ul>
+        <li>Ouvrez le menu Démarrer et tapez "Variables d'environnement".</li>
+        <li>Cliquez sur <em>Modifier les variables d'environnement du système</em>.</li>
+        <li>Dans la fenêtre Variables d'environnement, sous Variables utilisateur, cliquez sur <em>Nouveau</em>.</li>
+        <li>Créez deux nouvelles variables :
+            <ul>
+                <li><code>EMAIL_USER</code> : votre adresse email (Outlook, Yahoo).</li>
+                <li><code>EMAIL_PASS</code> : votre mot de passe email.</li>
+            </ul>
+        </li>
+    </ul>
+    
+    <h3>Sous Mac/Linux :</h3>
+    <ul>
+        <li>Ouvrez un terminal.</li>
+        <li>Ajoutez vos identifiants à la fin de votre fichier <code>.bashrc</code> ou <code>.zshrc</code>.</li>
+    </ul>
+    
+    <h2>Étape 4 : Créer et configurer le script Python</h2>
+    <p>Ouvrez un éditeur de texte (comme Visual Studio Code, Sublime Text, ou même Notepad) et créez un fichier <code>unsubscribe_bot.py</code>. Collez le code suivant dans ce fichier. Vous devrez ajuster la variable <code>service</code> en fonction du fournisseur de messagerie que vous utilisez (Outlook, Gmail, ou Yahoo).</p>
+    
+    <h3>CODE à copier :</h3>
+    <p>Par défaut, le code est configuré avec <code>service = "outlook"</code>. C'est en bas du code, et vous devrez changer la valeur en fonction de votre service, donc mettre <code>service = "yahoo"</code> pour Yahoo, etc.</p>
+    
+    <p>Ensuite, enregistrez ce fichier sous le nom <code>site_bot.py</code>.</p>
+    
+    <h2>Étape 5 : Lancer le bot</h2>
+    <ul>
+        <li>Faites un clic droit sur le dossier contenant le fichier et sélectionnez "Ouvrir dans le terminal".</li>
+        <li>Ensuite, tapez la commande suivante dans le terminal :
+            <pre><code>python site_bot.py</code></pre>
+        </li>
+    </ul>
+    
+    <p>Appuyez sur Entrée et voilà, le bot est lancé !</p>
+    
+    <h3>Problèmes éventuels :</h3>
+    <p>Si vous obtenez une erreur de connexion avec Outlook, suivez les étapes suivantes :</p>
+    <ul>
+        <li>Accédez à la sécurité de votre compte et activez l'authentification à deux facteurs.</li>
+        <li>Créez un mot de passe d'application dans la section <em>Mot de passe d'application</em>.</li>
+        <li>Utilisez ce mot de passe dans la variable d'environnement <code>EMAIL_PASS</code> (voir Étape 2).</li>
+</code></pre>
+</body>
+</html>
